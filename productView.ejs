@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product View</title>
+    <style>
+        .out-of-stock {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="searchInput" placeholder="Rechercher un produit" oninput="searchProduct()">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody id="productBody">
+            <% products.forEach(product => { %>
+                <tr class="<%= product.stocked ? '' : 'out-of-stock' %>">
+                    <td><%= product.name %></td>
+                    <td><%= product.price %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <script>
+        const products = <%- JSON.stringify(products) %>;
+
+        function displayProducts(filteredProducts) {
+            const productBody = document.getElementById('productBody');
+            productBody.innerHTML = ''; // Vider le contenu actuel
+
+            filteredProducts.forEach(product => {
+                const row = document.createElement('tr');
+                if (!product.stocked) {
+                    row.classList.add('out-of-stock'); // Ajouter la classe pour les produits non disponibles
+                }
+                row.innerHTML = `<td>${product.name}</td><td>${product.price}</td>`;
+                productBody.appendChild(row);
+            });
+        }
+
+        function searchProduct() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchInput));
+            displayProducts(filteredProducts);
+        }
+
+        // Afficher tous les produits au chargement de la page
+        displayProducts(products);
+    </script>
+</body>
+</html>
+</html>
